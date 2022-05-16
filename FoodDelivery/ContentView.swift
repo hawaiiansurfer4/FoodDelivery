@@ -46,7 +46,14 @@ class FoodController: UICollectionViewController {
                 section.contentInsets.leading = 16
                 return section
             } else {
+                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.5), heightDimension: .absolute(300)))
+                item.contentInsets.bottom = 16
+                item.contentInsets.trailing = 16
                 
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(1000)), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 32, leading: 16, bottom: 0, trailing: 0)
+                return section
             }
 
         }
