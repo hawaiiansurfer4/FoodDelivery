@@ -25,7 +25,7 @@ class FoodController: UICollectionViewController {
                 section.orthogonalScrollingBehavior = .paging
 
                 return section
-            } else {
+            } else if sectionNumber == 1 {
                 let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.25), heightDimension: .absolute(150)))
                 
                 item.contentInsets.trailing = 16
@@ -37,6 +37,16 @@ class FoodController: UICollectionViewController {
                 
                 section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50)), elementKind: categoryHeaderId, alignment: .topLeading)]
                 return section
+            } else if sectionNumber == 2 {
+                let item = NSCollectionLayoutItem.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+                item.contentInsets.trailing = 32
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(0.8), heightDimension: .absolute(125)), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                section.orthogonalScrollingBehavior = .continuous
+                section.contentInsets.leading = 16
+                return section
+            } else {
+                
             }
 
         }
@@ -53,7 +63,7 @@ class FoodController: UICollectionViewController {
     static let categoryHeaderId = "categoryHeaderId"
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        2
+        4
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
