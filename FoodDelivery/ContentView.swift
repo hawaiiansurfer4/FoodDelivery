@@ -10,19 +10,57 @@ import SwiftUI
 class FoodController: UICollectionViewController {
 
     init() {
-        let layout = UICollectionViewCompositionalLayout { sectionNumber, env in
-            let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(300)), subitems: [item])
-            let section = NSCollectionLayoutSection(group: group)
+        super.init(collectionViewLayout: FoodController.createLayout())
+    }
+    
+    static func createLayout() -> UICollectionViewCompositionalLayout {
+        return UICollectionViewCompositionalLayout { sectionNumber, env in
+            if sectionNumber == 0 {
+                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
+                item.contentInsets.trailing = 2
+                
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(200)), subitems: [item])
+                let section = NSCollectionLayoutSection(group: group)
+                
+                section.orthogonalScrollingBehavior = .paging
 
-            return section
+                return section
+            } else {
+                let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(0.25), heightDimension: .absolute(150)))
+                
+                item.contentInsets.trailing = 16
+                item.contentInsets.bottom = 16
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(500)), subitems: [item])
+                
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets.leading = 16
+                
+                section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(50)), elementKind: categoryHeaderId, alignment: .topLeading)]
+                return section
+            }
+
         }
-
-        super.init(collectionViewLayout: layout)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath)
+        
+        return header
+    }
+    
+    let headerId = "headerId"
+    
+    static let categoryHeaderId = "categoryHeaderId"
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        2
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        if section == 0 {
+            return 3
+        }
+        return 8
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -39,6 +77,7 @@ class FoodController: UICollectionViewController {
         navigationItem.title = "Food Delivery"
 
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(Header.self, forSupplementaryViewOfKind: FoodController.categoryHeaderId, withReuseIdentifier: headerId)
     }
 
     required init?(coder: NSCoder) {
@@ -46,7 +85,25 @@ class FoodController: UICollectionViewController {
     }
 }
 
+class Header: UICollectionReusableView {
+    let label = UILabel()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
 
+        label.text = "Categories"
+        
+        addSubview(label)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        label.frame = bounds
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
